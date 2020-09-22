@@ -35,8 +35,6 @@ def parse(line: str) -> tuple:
     tokens = line.split()
 
     if len(tokens) != 3:
-        # raise ValueError(f'invalid line: number of tokens found in line "{line}": '
-        #                  f'{len(tokens)} \nnumber of tokens expected: 3')
         raise ValueError(
             'invalid line format:' +
             ' expected "mm-dd-yyyy Deposit $xx.xx" or "mm-dd-yyyy Withdraw $xx.xx", found' +
@@ -74,7 +72,7 @@ def output_transaction_data(filename: str):
         print(f'could not process file due to error:\n{e}')
         return
     except FileNotFoundError:
-        print('file not found')
+        print("file not found")
         return
 
     print('Total transactions: ' + str(total_transactions))
