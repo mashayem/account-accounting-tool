@@ -1,5 +1,5 @@
 import re
-import sys
+import typer
 
 
 def process_account_data(filename):
@@ -10,9 +10,11 @@ def process_account_data(filename):
     first_negative_transaction_balance = ''
 
     with open(filename, 'r') as transactions:
-
-        for line in transactions:
-            date, transaction_type, amount = parse(line)
+        for line_counter, line in enumerate(transactions, start=1):
+            try:
+                date, transaction_type, amount = parse(line)
+            except ValueError as e:
+                raise ValueError(f'error on line #{line_counter}: {e}')
 
             balance += amount
 
@@ -21,32 +23,32 @@ def process_account_data(filename):
                 first_negative_transaction_balance = balance
                 negative_occurred = True
 
-            total_transactions += 1
+            total_transactions = line_counter
 
     return total_transactions, balance, negative_occurred, \
-        first_negative_transaction_date, first_negative_transaction_balance
+           first_negative_transaction_date, first_negative_transaction_balance
 
 
 def parse(line: str) -> tuple:
     tokens = line.split()
-    print(line)
 
     if len(tokens) != 3:
-        raise ValueError(f'invalid line: found {len(tokens)} tokens, expected 3: {line}')
+        raise ValueError(f'invalid line: number of tokens found in line "{line}": '
+                         f'{len(tokens)} \nnumber of tokens expected: 3')
 
     # validate date
     date = tokens[0]
-    if re.match(r'\d\d-\d\d-\d\d\d\d', date) is None:
+    if re.match(r'^\d\d-\d\d-\d\d\d\d$', date) is None:
         raise ValueError(f'invalid date: found {date}, expected format: mm-dd-yyyy')
 
     # validate transaction type
     transaction_type = tokens[1]
-    if re.match(r'(Withdraw|Deposit)', transaction_type) is None:
-        raise ValueError(f'invalid transaction type: found {transaction_type}, expected: "Withdraw" or "Deposit"')
+    if re.match(r'^(Withdraw|Deposit)$', transaction_type) is None:
+        raise ValueError(f'invalid transaction type: found "{transaction_type}", expected: "Withdraw" or "Deposit"')
 
     # validate amount
     amount = tokens[2]
-    if re.match(r'\$\d{1,8}\.\d\d', amount) is None:
+    if re.match(r'^\$\d{1,8}\.\d\d$', amount) is None:
         raise ValueError(f'invalid amount: found {amount}, expected format: $xx.xx')
 
     amount = float(amount[1:])
@@ -54,17 +56,16 @@ def parse(line: str) -> tuple:
     if transaction_type == 'Withdraw':
         amount *= -1
 
-    # todo: add validation of tokens with regexp
-
     return date, transaction_type, amount
 
 
-#     raise Value
-
-
-def output_transaction_data(filename):
-    total_transactions, balance, negative_occurred, \
-    first_negative_transaction_date, first_negative_transaction_balance = process_account_data(filename)
+def output_transaction_data(filename: str):
+    try:
+        total_transactions, balance, negative_occurred, \
+        first_negative_transaction_date, first_negative_transaction_balance = process_account_data(filename)
+    except ValueError as e:
+        print(f'could not process file due to error:\n{e}')
+        return
 
     print('Total transactions: ' + str(total_transactions))
     print('balance: ' + str(balance))
@@ -74,20 +75,10 @@ def output_transaction_data(filename):
         print(f'Date: {first_negative_transaction_date}')
         print(f'Balance after transaction: {first_negative_transaction_balance}')
 
-    # ignore empty line
-    # the date and balance for the first transaction that results in a negative account balance - do we need to sort the tr
-    # transactions file by date
-    # todo: sort transaction list by date
-    # why do we need to show the first negative transaction - do we want to see the oldest one or the most recent one?
 
-    # read file and parse line by line
-
-    # withdraw or deposit
-
-    # count transactions
+def main():
+    typer.run(output_transaction_data)
 
 
 if __name__ == '__main__':
-    print(sys.argv)
-    user_provided_filename = sys.argv[1]
-    print(process_account_data(user_provided_filename))
+    main()

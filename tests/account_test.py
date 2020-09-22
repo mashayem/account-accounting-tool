@@ -1,8 +1,6 @@
 import pytest
-from src.account import process_account_data, parse
+from src.main import process_account_data, parse
 
-# todo: take these out to a config file, do not keep tests data hardcoded in the tests file
-# todo: create classes for Account and tests
 filename_negative = 'tests/fixtures/negative_balance_sample.txt'
 filename_negative_single_occurrence = 'tests/fixtures/single_occurrence_of_negative_balance_sample.txt'
 
@@ -30,15 +28,13 @@ def test_parse_with_invalid_transaction_raises_exception():
 
     assert 'invalid date: found 09-1-2020, expected format: mm-dd-yyyy' in str(e.value)
 
+# todo: test error handling on the application level
+
+# todo: test error info
 
 # verify it is indicated properly when there was at least 1 occurrence of negative balance
-
 def test_negative_balance_registered():
     transaction_data = process_account_data(filename_negative_single_occurrence)
     status_actual = transaction_data[2]
     status_expected = True
     assert status_actual == status_expected
-
-# verify first negative transaction data not overwritten by the following negative-balance transactions
-
-# verify big files are handled correctly (how to generate a REALLY big file)

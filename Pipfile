@@ -5,9 +5,11 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pyinstaller = "*"
 
 [packages]
 accounting-tool = {editable = true, path = "."}
+typer = "*"
 
 [requires]
 python_version = "3.8.0"
