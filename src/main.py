@@ -25,6 +25,8 @@ def process_account_data(filename):
 
             total_transactions = line_counter
 
+    if total_transactions == 0:
+        raise ValueError('file is empty')
     return total_transactions, balance, negative_occurred, \
            first_negative_transaction_date, first_negative_transaction_balance
 
@@ -33,8 +35,13 @@ def parse(line: str) -> tuple:
     tokens = line.split()
 
     if len(tokens) != 3:
-        raise ValueError(f'invalid line: number of tokens found in line "{line}": '
-                         f'{len(tokens)} \nnumber of tokens expected: 3')
+        # raise ValueError(f'invalid line: number of tokens found in line "{line}": '
+        #                  f'{len(tokens)} \nnumber of tokens expected: 3')
+        raise ValueError(
+            'invalid line format:' +
+            ' expected "mm-dd-yyyy Deposit $xx.xx" or "mm-dd-yyyy Withdraw $xx.xx", found' +
+            f' "{line}"'
+        )
 
     # validate date
     date = tokens[0]
@@ -65,6 +72,9 @@ def output_transaction_data(filename: str):
         first_negative_transaction_date, first_negative_transaction_balance = process_account_data(filename)
     except ValueError as e:
         print(f'could not process file due to error:\n{e}')
+        return
+    except FileNotFoundError:
+        print('file not found')
         return
 
     print('Total transactions: ' + str(total_transactions))

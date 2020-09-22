@@ -4,13 +4,12 @@ A tool for processing important financial data.
 
 ## Development
 Prerequisites:
-- python
+- python3
 - pipenv
 
-Project setup
+Install dependencies
 ```
 pipenv install --dev
-pipenv install -e .
 ```
 
 Run tests
@@ -29,18 +28,11 @@ Prerequisites:
 - pipenv
 - docker
 
-Recommended python installation for Mac OS based packaging
+Build binary packages for macOS, linux, Windows
 ```
-PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.8.5
-```
-
-Build binary packages for Mac OS, Linux, Windows
-```
-bash ./pyinstaller.sh
+./pyinstaller.sh
 ```
 
-Natively built package (Max OS in my case) will be available at `dist/macos/cli`
-
-Linux package will be available at `dist/linux/cli`
-
-Windows package will be available at `dist/windows/cli`
+Natively built package (macOS in my case) will be available at `dist/macos`
+Linux package will be available at `dist/linux`
+Windows package will be available at `dist/windows`
