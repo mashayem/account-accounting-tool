@@ -25,7 +25,7 @@ pipenv run pytest --alluredir=path/to/allure_results
 
 View Allure generated report after running tests
 ```
-pipenv run allure serve /absolute/path/to/allure_results
+pipenv run allure serve path/to/allure_results
 ```
 
 Run app
