@@ -1,0 +1,13 @@
+Items I would have implemented given more time
+
+# set up continuous integration with Jenkins
+# add reporting
+
+app:
+# add configuration option for e2e tests to choose executable based on user os
+# add functionality to sort a transactions file by date
+
+tests:
+# verify big files are handled correctly (how to generate a REALLY big file)
+# take test data out to a config file in order not to keep them hardcoded in the tests file
+# add logging in order to have more readable info about failed tests

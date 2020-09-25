@@ -17,6 +17,16 @@ Run tests
 pipenv run pytest
 ```
 
+Run tests with Allure reporting
+```
+pipenv run pytest --alluredir=/absolute/path/to/allure_results
+```
+
+View Allure generated report after running tests
+```
+pipenv run allure serve /absolute/path/to/allure_results
+```
+
 Run app
 ```
 pipenv run python account.py <filename>

@@ -42,10 +42,11 @@ def test_process_empty_file_raises_exception():
 def test_process_file_with_empty_line_raises_exception():
     with pytest.raises(ValueError) as e:
         process_account_data(empty_line_path)
+    # assert "expected" == "actual"
     assert 'error on line #6: ' \
            'invalid line format: ' \
-           'expected "mm-dd-yyyy Deposit $xx.xx" or "mm-dd-yyyy Withdraw $xx.xx", ' \
-           'found "\n"' in str(e.value)
+           'expected \'mm-dd-yyyy Deposit $xx.xx\' or \'mm-dd-yyyy Withdraw $xx.xx\', ' \
+           'found \'\n\'' in str(e.value)
 
 
 def test_process_file_with_invalid_date_raises_exception():
@@ -59,8 +60,8 @@ def test_process_file_with_invalid_date_raises_exception():
 def test_process_file_with_invalid_transaction_type_raises_exception():
     with pytest.raises(ValueError) as e:
         process_account_data(invalid_transaction_type_path)
-    assert 'error on line #5: invalid transaction type: found "Withdraws", ' \
-           'expected: "Withdraw" or "Deposit"' in str(e.value)
+    assert 'error on line #5: invalid transaction type: found \'Withdraws\', ' \
+           'expected: \'Withdraw\' or \'Deposit\'' in str(e.value)
 
 
 def test_process_file_with_invalid_amount_raises_exception():

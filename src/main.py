@@ -1,3 +1,4 @@
+import json
 import re
 import typer
 
@@ -37,8 +38,8 @@ def parse(line: str) -> tuple:
     if len(tokens) != 3:
         raise ValueError(
             'invalid line format:' +
-            ' expected "mm-dd-yyyy Deposit $xx.xx" or "mm-dd-yyyy Withdraw $xx.xx", found' +
-            f' "{line}"'
+            ' expected \'mm-dd-yyyy Deposit $xx.xx\' or \'mm-dd-yyyy Withdraw $xx.xx\', found ' +
+            f'\'{line}\''
         )
 
     # validate date
@@ -49,7 +50,7 @@ def parse(line: str) -> tuple:
     # validate transaction type
     transaction_type = tokens[1]
     if re.match(r'^(Withdraw|Deposit)$', transaction_type) is None:
-        raise ValueError(f'invalid transaction type: found "{transaction_type}", expected: "Withdraw" or "Deposit"')
+        raise ValueError(f'invalid transaction type: found \'{transaction_type}\', expected: \'Withdraw\' or \'Deposit\'')
 
     # validate amount
     amount = tokens[2]
@@ -67,21 +68,22 @@ def parse(line: str) -> tuple:
 def output_transaction_data(filename: str):
     try:
         total_transactions, balance, negative_occurred, \
-        first_negative_transaction_date, first_negative_transaction_balance = process_account_data(filename)
+            first_negative_transaction_date, first_negative_transaction_balance = process_account_data(filename)
     except ValueError as e:
-        print(f'could not process file due to error:\n{e}')
+        print(json.dumps({'error': str(e)}))
         return
     except FileNotFoundError:
-        print("file not found")
+        print(json.dumps({'error': 'file not found'}))
         return
 
-    print('Total transactions: ' + str(total_transactions))
-    print('balance: ' + str(balance))
-    if negative_occurred:
-        print("-" * 50)
-        print('First negative-balance transaction:')
-        print(f'Date: {first_negative_transaction_date}')
-        print(f'Balance after transaction: {first_negative_transaction_balance}')
+    output = {
+        'total_transactions': total_transactions,
+        'balance': balance,
+        'first_negative_transaction_date': first_negative_transaction_date,
+        'first_negative_transaction_balance': first_negative_transaction_balance
+    }
+
+    print(json.dumps(output))
 
 
 def main():
