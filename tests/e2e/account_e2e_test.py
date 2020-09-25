@@ -1,11 +1,14 @@
 import json
+import os
 import subprocess
 import json
 
 
 def run_app_with_file(filename):
+    executable_path = os.getenv('EXECUTABLE_PATH', 'dist/macos/account')
+
     output = subprocess.check_output([
-        'dist/macos/account',
+        executable_path,
         filename
     ])
 
